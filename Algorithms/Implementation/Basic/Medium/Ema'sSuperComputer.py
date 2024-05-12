@@ -51,66 +51,38 @@ import sys
 # The function accepts STRING_ARRAY grid as parameter.
 #
 
-    # for i in range(len(grid)):
-    #     grid[i] = list(grid[i])
-    #     grid[i].append('o')
-    #     grid[i].insert(0,'o')
-    # grid.append(['o' for i in range(len(grid[0]))])
-    # grid.insert(0,['o' for i in range(len(grid[0]))])
-    # for g in grid:
-    #     print(''.join(g))
-    # res = []
-    # for i in range(1,len(grid)-1):
-    #     for j in range(1, len(grid[0])-1):
-    #         if grid[i][j]=='G':
-    #             currCord = []
-    #             currCord.append((i,j))
-    #             area = 1
-    #             start = 1
-    #             res.append([area,currCord.copy()])
-    #             while ((grid[i-start][j]=='G') & (grid[i+start][j]=='G') & (grid[i][j-start]=='G') & (grid[i][j+start]=='G')):
-    #                 currCord.append((i-start,j))
-    #                 currCord.append((i+start,j))
-    #                 currCord.append((i,j-start))
-    #                 currCord.append((i,j+start))
-    #                 area+=4
-    #                 start+=1
-    #                 res.append([area,currCord.copy()])
-    # result = 0      
-    # for i in range(len(res)-1):
-    #     for j in range(i+1,len(res)):
-    #         if (len(set(res[i][1]).intersection(set(res[j][1])))==0) & (res[i][0]*res[j][0]>result):
-    #             result = res[i][0]*res[j][0]
-    # return result
-
 def twoPluses(grid):
-    # Write your code here
-    grid = [list(row) for row in grid]
-    res = set()
-    res_val = 0 
-    for i in range(len(grid)):
-        for j in range(len(grid[i])):
-            if grid[i][j] == 'G':
-                valid = True
-                num = 1
-                while valid:
-                    if i-num>=0 and j-num>=0 and i<len(grid)-num and j<len(grid[i])-num:
-                        if grid[i-num][j] == 'G' and grid[i+num][j] == 'G' and grid[i][j-num] == 'G' and grid[i][j+num] == 'G':
-                            grid[i-num][j] = 'B'
-                            grid[i+num][j] = 'B' 
-                            grid[i][j-num] = 'B' 
-                            grid[i][j+num] = 'B'
-                            print(num, i, j)
-                            # print(4*num+1)
-                            res.add((i,j))
-                            valid = True
-                            num += 1
-                        else:
-                            valid = False
+    list_temp = []
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == 'G':
+                set_temp = set()
+                set_temp.add((r, c))
+                i = 1
+                while i > 0:
+                    if r+i < len(grid) and r-i >= 0 and c+i < len(grid[0]) and c-i >= 0 \
+                    and grid[r][c-i] == 'G' and grid[r][c+i] == 'G' and grid[r-i][c] == 'G' and grid[r+i][c] == 'G':
+                        set_temp.add((r, c-i))
+                        set_temp.add((r, c+i))
+                        set_temp.add((r-i, c))
+                        set_temp.add((r+i, c))
+                        i += 1
+                        list_temp.append(set_temp.copy())
                     else:
-                        valid = False
-
-    return 4*num+1    
+                        i = -1
+    if not list_temp:
+        return 1
+    res = []
+    for i in range(len(list_temp)):
+        for j in range(i+1, len(list_temp)):
+            if len(list_temp[i]&list_temp[j]) == 0:
+                res.append(len(list_temp[i])*len(list_temp[j]))
+    
+    if not res:
+        return len(max(list_temp, key = lambda i: len(i)))
+    else:
+        return max(res)  
+      
 if __name__ == '__main__':
 
     first_multiple_input = input().rstrip().split()
