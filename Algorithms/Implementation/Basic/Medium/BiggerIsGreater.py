@@ -46,7 +46,7 @@ from itertools import permutations
 def biggerIsGreater(w):
     # Write your code here
     cases = [''.join(p) for p in permutations(w)]
-    sorted_cases = sorted(list(cases))
+    sorted_cases = sorted(set(cases))
     index = sorted_cases.index(w)
 
     print(sorted_cases, index, len(sorted_cases))
